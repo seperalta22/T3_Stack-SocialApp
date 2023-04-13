@@ -6,10 +6,9 @@ import Link from "next/link";
 import { api } from "~/utils/api";
 
 const Home: NextPage = () => {
-  const hello = api.example.hello.useQuery({ text: "from tRPC" });
-
   const user = useUser(); //esto viene de @clerk/nextjs
 
+  const data = api.posts.getAll.useQuery();
   return (
     <>
       <Head>
@@ -27,6 +26,18 @@ const Home: NextPage = () => {
           </>
         )}
         {!!user.isSignedIn && <SignOutButton />}
+
+        <div>
+          {data.data?.map((post) => (
+            <div key={post.id} className="text-white">
+              <Link href={`/posts/${post.id}`}></Link>
+              <p>{post.content}</p>
+              <p>{post.createdAt.toTimeString()}</p>
+
+              <p>{post.authorId}</p>
+            </div>
+          ))}
+        </div>
       </main>
     </>
   );
